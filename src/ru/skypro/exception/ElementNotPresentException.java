@@ -6,5 +6,6 @@ public class ElementNotPresentException extends RuntimeException {
     }
 
     public ElementNotPresentException() {
+        super("Элемент с переданным значением не найден!");
     }
 }

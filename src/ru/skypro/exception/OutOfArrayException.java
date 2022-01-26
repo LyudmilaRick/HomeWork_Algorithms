@@ -6,5 +6,6 @@ public class OutOfArrayException extends RuntimeException {
     }
 
     public OutOfArrayException() {
+        super("Индекс выходит за пределы размерности массива!");
     }
 }

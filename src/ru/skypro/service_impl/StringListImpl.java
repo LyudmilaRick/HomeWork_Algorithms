@@ -27,13 +27,7 @@ public class StringListImpl implements StringList {
      */
     protected int count = 0;
 
-    /**
-     * Величина приращения размера массива при его расширении.
-     */
-    protected final int capacity;
-
     public StringListImpl() {
-        capacity = CAPACITY;
         stringArray = new String[CAPACITY];
     }
 
@@ -50,7 +44,7 @@ public class StringListImpl implements StringList {
     }
 
     protected void resize() {
-        String[] array = new String[getLength() + capacity];
+        String[] array = new String[getLength() + CAPACITY];
         System.arraycopy(stringArray, 0, array, 0, getLength());
         stringArray = array;
     }
@@ -82,7 +76,7 @@ public class StringListImpl implements StringList {
             String temp = stringArray[index];
             stringArray[index] = item;
             // остальых - сдвинем
-            for (int i = getPosition(); i > index; i--) {
+            for (int i = getPosition(); i >= index; i--) {
                 stringArray[i + 1] = stringArray[i];
             }
             stringArray[index + 1] = temp;
@@ -139,14 +133,10 @@ public class StringListImpl implements StringList {
         if (item == null) {
             throw new NullElementException();
         }
-        // перебираем всех и ищем нужный
-        for (int i = 0; i < getPosition(); i++) {
-            if (stringArray[i].equals(item)) {
-                return true;
-            }
+        if (indexOf(item) == -1){
+            return false;
         }
-        // цикл пройден, ничего не найдено
-        return false;
+        return true;
     }
 
     @Override
