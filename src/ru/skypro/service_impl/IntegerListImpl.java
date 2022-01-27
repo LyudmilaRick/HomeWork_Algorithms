@@ -41,12 +41,42 @@ public class IntegerListImpl implements IntegerList {
         return intArray.length;
     }
 
-    protected void resize() {
-        Integer[] array = new Integer[getLength() + CAPACITY];
+    protected boolean checkLimits(int index) {
+        return index >= 0 && index <= getPosition();
+    }
+
+    protected boolean checkContent(Integer value) {
+        return value == null;
+    }
+    //private void resize() {
+    //    Integer[] array = new Integer[getLength() + CAPACITY];
+    //    System.arraycopy(intArray, 0, array, 0, getLength());
+    //    intArray = array;
+    //}
+
+    /**
+     * Реализовать приватный метод grow
+     * который будет отвечать за расширение массива-хранилища в 1,5 раза в ситуации,
+     * когда место закончилось.
+     */
+    protected void grow() {
+        Integer[] array = new Integer[getLength() * 3 / 2];
         System.arraycopy(intArray, 0, array, 0, getLength());
         intArray = array;
     }
-    private   boolean contains(int[] arr, int element) {
+
+    /**
+     * Реализовать приватный метод resize
+     * который будет уменьшать массив-хранилище на треть,
+     * когда он заполнен меньше, чем наполовину
+     */
+    protected void resize() {
+        Integer[] array = new Integer[getLength() * 2 / 3];
+        System.arraycopy(intArray, 0, array, 0, getLength());
+        intArray = array;
+    }
+
+    private boolean contains(int[] arr, int element) {
         int min = 0;
         int max = arr.length - 1;
 
@@ -68,11 +98,11 @@ public class IntegerListImpl implements IntegerList {
 
     @Override
     public Integer add(Integer item) {
-        if (item == null) {
+        if (checkContent(item)) {
             throw new NullElementException();
         }
         if (getCount() == getLength()) {
-            resize();
+            grow();
         }
         intArray[count++] = item;
         return intArray[getPosition()];
@@ -80,10 +110,10 @@ public class IntegerListImpl implements IntegerList {
 
     @Override
     public Integer add(Integer index, Integer item) {
-        if (item == null) {
+        if (checkContent(item)) {
             throw new NullElementException();
         }
-        if (index >= 0 && index <= getPosition()) {
+        if (checkLimits(index)) {
             // массив заполнен до последнего элемента
             if (getCount() == getLength()) {
                 resize();
@@ -104,10 +134,10 @@ public class IntegerListImpl implements IntegerList {
 
     @Override
     public Integer set(int index, Integer item) {
-        if (item == null) {
+        if (checkContent(item)) {
             throw new NullElementException();
         }
-        if (index >= 0 && index <= getPosition()) {
+        if (checkLimits(index)) {
             intArray[index] = item;
             return intArray[index];
         }
@@ -116,7 +146,7 @@ public class IntegerListImpl implements IntegerList {
 
     @Override
     public Integer remove(Integer item) {
-        if (item == null) {
+        if (checkContent(item)) {
             throw new NullElementException();
         }
         // перебираем всех и ищем нужный
@@ -132,11 +162,17 @@ public class IntegerListImpl implements IntegerList {
 
     @Override
     public Integer remove(int index) {
-        if (index >= 0 && index <= getPosition()) {
-            // сдивигаем всех на один влево
-            for (int i = index; i < getLength() - 1; i++) {
+        // заполнен меньше, чем наполовину.
+        if (getCount() < getLength() / 2) {
+            resize();
+        }
+        if (checkLimits(index)) {
+            // сдвигаем всех на один влево
+            for (int i = index; i < getPosition(); i++) {
                 intArray[i] = intArray[i + 1];
             }
+            // @OKrylov обnullить бывший последний элемент, чтобы массив более не ссылался на него
+            intArray[getPosition()] = null;
             count--;
             return intArray[index];
         }
@@ -147,9 +183,12 @@ public class IntegerListImpl implements IntegerList {
      * отсортировать КОПИЮ массива
      * найти методом двоичного поиска
      * Результаты теста сортировок на массиве из 100 000 элементов
-     *  Пузырьковая сортировка - 17351
-     *  Сортировка выбором - 6879
-     *  Сортировка вставкой - 890
+     * Пузырьковая сортировка - 17742
+     * Сортировка выбором - 7086
+     * Сортировка вставкой - 912
+     * Быстрая сортировка - 20
+     * Сортировка слиянием - 27
+     *
      * @param item - значение для поиска
      * @return boolean
      */
@@ -157,7 +196,7 @@ public class IntegerListImpl implements IntegerList {
     public boolean contains(Integer item) {
         int[] array = new int[getLength()];
         System.arraycopy(intArray, 0, array, 0, getLength());
-        sortCollections.sortInsertion(array);
+        sortCollections.mergeSort(array);
         return contains(array, item);
     }
 
@@ -175,9 +214,7 @@ public class IntegerListImpl implements IntegerList {
 
     @Override
     public int lastIndexOf(Integer item) {
-        if (item == null) {
-            throw new NullElementException();
-        }
+        // @OKrylov проверка на null по идее избыточна
         // перебираем всех и ищем нужный
         for (int i = getPosition(); i > 0; i--) {
             if (intArray[i].equals(item)) {
@@ -190,7 +227,7 @@ public class IntegerListImpl implements IntegerList {
 
     @Override
     public Integer get(int index) {
-        if (index >= 0 && index <= getPosition()) {
+        if (checkLimits(index)) {
             return intArray[index];
         }
         throw new OutOfArrayException();
@@ -198,7 +235,8 @@ public class IntegerListImpl implements IntegerList {
 
     /**
      * пройти цикл по размеру меньшего массива, сравнивая поэлементно
-     * @param otherList  массив
+     *
+     * @param otherList массив
      * @return boolean
      */
     @Override
