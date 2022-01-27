@@ -1,50 +1,59 @@
 package ru.skypro;
 
+import ru.skypro.service.IntegerList;
 import ru.skypro.service.StringList;
+import ru.skypro.service_impl.IntegerListImpl;
 import ru.skypro.service_impl.StringListImpl;
+import ru.skypro.sort.sortCollections;
+import java.util.Arrays;
 
 public class Main {
-
     public static void main(String[] args) {
-        // write your code here
-        StringList array = new StringListImpl();
-        /**
-         * add(String item)
-         * add(int index, String item);
-         */
-        array.add("первый");
-        array.add("второй");
-        array.add("третий");
-        array.add("четвертый");
-        array.add("пятый");
-        array.add("шестой");
-        array.add(3, "третий");
-        /**
-         * set(int index, String item)
-         * get(int index)
-         */
-        array.set(1, "first");
-        array.get(3);
-        /**
-         *   remove(String item)
-         *   remove(String item)
-         */
-        array.remove(1);
-        array.remove("четвертый");
-        //array.remove("forth");
-        /**
-         *  indexOf(String item)
-         *  lastIndexOf(String item)
-         */
-        System.out.println("Индекс элемента равен " + array.indexOf("пятый"));
-        System.out.println("Индекс элемента равен " + array.lastIndexOf("третий"));
-        System.out.println("Индекс элемента равен " + array.lastIndexOf("нулевой"));
-        /**
-         *  int size();
-         *  void clear();
-         */
-        System.out.println(array.size());
-        array.clear();
+
+            // write your code here
+            // Для получения массива случайных чисел
+            int[] arr = generateRandomArray(100000);
+            int[] copy1 = Arrays.copyOf(arr, arr.length);
+            int[] copy2 = Arrays.copyOf(arr, arr.length);
+
+            System.out.print("Пузырьковая сортировка - ");
+            long start = System.currentTimeMillis();
+            sortCollections.sortBubble(arr);
+            System.out.print(System.currentTimeMillis() - start);
+
+            System.out.print("\n");
+            System.out.print("Сортировка выбором - ");
+            start = System.currentTimeMillis();
+            sortCollections.sortSelection(copy1);
+            System.out.print(System.currentTimeMillis() - start);
+
+            System.out.print("\n");
+            System.out.print("Сортировка вставкой - ");
+            start = System.currentTimeMillis();
+            sortCollections.sortInsertion(copy2);
+            System.out.print(System.currentTimeMillis() - start);
+
+            IntegerList  array  = generateRandomIntegerArray(5);
 
     }
+
+        private static int[] generateRandomArray(int size) {
+            java.util.Random random = new java.util.Random();
+            int[] arr = new int[size];
+            for (int i = 0; i < arr.length; i++) {
+                arr[i] = random.nextInt(100_000) + 100_000;
+            }
+            return arr;
+        }
+       private static IntegerList generateRandomIntegerArray(int size) {
+        java.util.Random random = new java.util.Random();
+           IntegerListImpl arr = new IntegerListImpl();
+           for (int i = 0; i < size; i++) {
+               Integer item = random.nextInt(100_000) + 100_000;
+                arr.add(item) ;
+        }
+        return arr;
+    }
+
+
 }
