@@ -1,10 +1,8 @@
 package ru.skypro;
 
 import ru.skypro.service.IntegerList;
-import ru.skypro.service.StringList;
 import ru.skypro.service_impl.IntegerListImpl;
-import ru.skypro.service_impl.StringListImpl;
-import ru.skypro.sort.sortCollections;
+import ru.skypro.sort.SortUtils;
 
 import java.util.Arrays;
 
@@ -21,31 +19,31 @@ public class Main {
 
         System.out.print("Пузырьковая сортировка - ");
         long start = System.currentTimeMillis();
-        sortCollections.sortBubble(arr);
+        SortUtils.sortBubble(arr);
         System.out.print(System.currentTimeMillis() - start);
 
         System.out.print("\n");
         System.out.print("Сортировка выбором - ");
         start = System.currentTimeMillis();
-        sortCollections.sortSelection(copy1);
+        SortUtils.sortSelection(copy1);
         System.out.print(System.currentTimeMillis() - start);
 
         System.out.print("\n");
         System.out.print("Сортировка вставкой - ");
         start = System.currentTimeMillis();
-        sortCollections.sortInsertion(copy2);
+        SortUtils.sortInsertion(copy2);
         System.out.print(System.currentTimeMillis() - start);
 
         System.out.print("\n");
         System.out.print("Быстрая сортировка - ");
         start = System.currentTimeMillis();
-        sortCollections.quickSort(copy3, 0, 99999);
+        SortUtils.quickSort(copy3, 0, 99999);
         System.out.print(System.currentTimeMillis() - start);
 
         System.out.print("\n");
         System.out.print("Сортировка слиянием - ");
         start = System.currentTimeMillis();
-        sortCollections.mergeSort(copy4);
+        SortUtils.mergeSort(copy4);
         System.out.print(System.currentTimeMillis() - start);
 
     }

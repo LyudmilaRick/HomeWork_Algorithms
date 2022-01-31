@@ -4,7 +4,7 @@ import ru.skypro.exception.ElementNotPresentException;
 import ru.skypro.exception.NullElementException;
 import ru.skypro.exception.OutOfArrayException;
 import ru.skypro.service.IntegerList;
-import ru.skypro.sort.sortCollections;
+import ru.skypro.sort.SortUtils;
 
 
 /**
@@ -196,7 +196,7 @@ public class IntegerListImpl implements IntegerList {
     public boolean contains(Integer item) {
         int[] array = new int[getLength()];
         System.arraycopy(intArray, 0, array, 0, getLength());
-        sortCollections.mergeSort(array);
+        SortUtils.mergeSort(array);
         return contains(array, item);
     }
 

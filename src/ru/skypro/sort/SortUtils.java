@@ -1,6 +1,6 @@
 package ru.skypro.sort;
 
-public class sortCollections {
+public class SortUtils {
     public static void sortBubble(int[] arr) {
         for (int i = 0; i < arr.length - 1; i++) {
             for (int j = 0; j < arr.length - 1 - i; j++) {
@@ -100,7 +100,7 @@ public class sortCollections {
         merge(arr, left, right);
     }
 
-    public static void merge(int[] arr, int[] left, int[] right) {
+    protected static void merge(int[] arr, int[] left, int[] right) {
 
         int mainP = 0;
         int leftP = 0;
